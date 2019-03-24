@@ -26,23 +26,10 @@ artifacts:
 deploy:
   - provider: GitHub
     auth_token:
-      secure: KFrN1rc9FJN3BEoX99whHEuK5iPHHLmDcZ1Ac7tgT9oR6AxyjL0B+XMQu4wqo+fK
+      secure: o9QJZcp+yLsNOWHOnovkGJOI/0UEt8LrwyLfB5m9NTYncEfJ1oAJacTeqehsnTn0
     artifact: BitNovexRelease
     draft: false
     prerelease: false
     on:
       appveyor_repo_name: BitNovex/BitNovex
       appveyor_repo_tag: true
-
-  - provider: S3
-    access_key_id:
-      secure: nVmSNpabdw1WcGdTTzxAEjza8j9icu89oyXbC8fZVuM=
-    secret_access_key:
-      secure: TpCxPp5npMRclcwHB3dhkd9ZsEgKstS6HOnQ1VR6YObEsaPyl5dr16ZdbsOgjykj
-    bucket: BitNovex
-    region: us-east-2
-    set_public: true
-    folder: BitNovex
-    artifact: BitNovexRelease
-    on:
-      appveyor_repo_name: BitNovex/BitNovex

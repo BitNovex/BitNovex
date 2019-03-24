@@ -98,15 +98,15 @@ install:
 - if [[ "${LABEL:0:3}" == "osx" ]]; then brew cask uninstall --force oclint || true ; fi
 
 # Need a newer version of llvm to link against to get std::filesystem / std::experimental::filesystem
-- if [[ "${LABEL:0:3}" == "osx" ]]; then travis_retry brew install llvm || travis_retry brew upgrade llvm ; fi
+- if [[ "${LABEL:0:3}" == "osx" ]]; then brew install llvm || brew upgrade llvm ; fi
 
 # Neeed to install ccache
-- if [[ "${LABEL:0:3}" == "osx" ]]; then travis_retry brew install ccache ; fi
+- if [[ "${LABEL:0:3}" == "osx" ]]; then brew install ccache ; fi
 - if [[ "${LABEL:0:3}" == "osx" ]]; then export PATH="/usr/local/opt/ccache/libexec:$PATH" ; fi
 
 # Install the correct gcc version
-- if [[ "$LABEL" == "osx-g++-8" ]]; then travis_retry brew install gcc@8 ; fi
-- if [[ "$LABEL" == "osx-g++-7" ]]; then travis_retry brew install gcc@7 ; fi
+- if [[ "$LABEL" == "osx-g++-8" ]]; then brew install gcc@8 ; fi
+- if [[ "$LABEL" == "osx-g++-7" ]]; then brew install gcc@7 ; fi
 
 - if [[ "$LABEL" == "aarch64" ]]; then export BASEDIR=`pwd` ; fi
 - if [[ "$LABEL" == "aarch64" ]]; then cd $HOME ; fi
@@ -118,7 +118,7 @@ install:
 - if [[ "$LABEL" == "aarch64" ]]; then tar zxvf ../../boost_1_55_0.tar.gz >/dev/null ; fi
 - if [[ "$LABEL" == "aarch64" ]]; then cd boost_1_55_0 ; fi
 - if [[ "$LABEL" == "aarch64" ]]; then ./bootstrap.sh ; fi
-- if [[ "$LABEL" == "aarch64" ]]; then curl https://raw.githubusercontent.com/BitNovex/BitNovex/master/scripts/fix_boost_aarch64.sh | sh ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then curl https://raw.githubusercontent.com/BitNovex/BitNovex/development/scripts/fix_boost_aarch64.sh | sh ; fi
 - if [[ "$LABEL" == "aarch64" ]]; then ./b2 toolset=gcc-aarch64 --with-system --with-filesystem --with-thread --with-date_time --with-chrono --with-regex --with-serialization --with-program_options >/dev/null; fi
 - if [[ "$LABEL" == "aarch64" ]]; then export CUSTOM_BOOST_ROOT="-DBOOST_ROOT=`pwd`" ; fi
 - if [[ "$LABEL" == "aarch64" ]]; then export CUSTOM_TOOLCHAIN="-DCMAKE_TOOLCHAIN_FILE=../scripts/cross-aarch64.cmake" ; fi
@@ -128,14 +128,13 @@ install:
 script:
 - eval $MATRIX_EVAL
 - mkdir build && cd build
-- cmake -DCMAKE_BUILD_TYPE=Release -DSTATIC=true .. ${CUSTOM_TOOLCHAIN} ${CUSTOM_BOOST_ROOT} ${ADDITIONAL_CMAKE_ARGS}
+- cmake -DCMAKE_BUILD_TYPE=Release -DSTATIC=true .. ${CUSTOM_TOOLCHAIN} ${CUSTOM_BOOST_ROOT}
 - make -j2
-- if [[ "$LABEL" != "aarch64" ]]; then ./src/cryptotest ; fi
 
 before_deploy:
 - if [[ "${TRAVIS_TAG}" == "" ]]; then export TRAVIS_TAG=${TRAVIS_COMMIT} ; fi
 - cd src
-- TARGETS="BitNovexd miner zedwallet BitNovex-service zedwallet-beta cryptotest wallet-api"
+- TARGETS="TurtleCoind miner zedwallet turtle-service zedwallet-beta cryptotest wallet-api"
 - ${STRIP} ${TARGETS}
 - rm -rf BitNovex-${TRAVIS_TAG}
 - mkdir BitNovex-${TRAVIS_TAG}
@@ -145,20 +144,20 @@ before_deploy:
 - rm -rf builds
 - mkdir builds
 - cp BitNovex-${TRAVIS_TAG}-${LABEL}.tar.gz builds
-- cd builds
+- cd ..
 
 deploy:
   - provider: releases
     api_key:
-       secure: t1OIf04Gf+CBX7912dzpExMP+HrwQZBjL41wUsyQCXJiCchyOV4BlLpJAhjuBrhvm/NMY/M3LAMsC8NC9aEfljW7cFfW7iV3osZWQN4DsAtNI0fVNRjEfLYMB++MXppC4ftSOrw0gWozSf5l95Tsb6iJuQbB52PoOe4A41hJp9B1YadsDTP2tljnc3f7ok62zXoWvm9cX8n7BJFy75LD7E/ZEKpuXAzeVrkbV+6v8iQU46I+ZfTEoxWh+aTgOqnlPGSM/0AeN5Mk9q9IzOfd+TKlgR00f+0GKHERDeYYwV9wQOi4Jg9MMGV2rYpntRUnzqWI+SkyfQ18YqXNlldxfj5wA/G8Cwd0IpN3uj1V8t5tU7/jPW1eqt9XQ2EFuPw98jcHHHtZDML8rTniOb7uuLWrAPqdrq983YBspAX94LA8KsYRSDjP1ZknlSt+bFNqVjF+xh9WNeGZ5Tx3xr/2Au+mPmNTDE05G/knIkG4BFR9xThspLFBqHQykBHmewX1VUxasZNZSWTjOSt5mrM9Fz9JpHr5OIPuSLg5LtYLkmwSnDBDHqHGiZY4nhkwBUj+sEOAPdjhG2FvkH5uOzRiV3eCeeCYDjbquE4UvT0lI2L4wpShrnI9tyjSq6CRnMlCkVs2KXWTEkIvWu/U8ek1++ldy9KEUFc2N+HYWmiN9Kw=
-      file:
+      secure: t1OIf04Gf+CBX7912dzpExMP+HrwQZBjL41wUsyQCXJiCchyOV4BlLpJAhjuBrhvm/NMY/M3LAMsC8NC9aEfljW7cFfW7iV3osZWQN4DsAtNI0fVNRjEfLYMB++MXppC4ftSOrw0gWozSf5l95Tsb6iJuQbB52PoOe4A41hJp9B1YadsDTP2tljnc3f7ok62zXoWvm9cX8n7BJFy75LD7E/ZEKpuXAzeVrkbV+6v8iQU46I+ZfTEoxWh+aTgOqnlPGSM/0AeN5Mk9q9IzOfd+TKlgR00f+0GKHERDeYYwV9wQOi4Jg9MMGV2rYpntRUnzqWI+SkyfQ18YqXNlldxfj5wA/G8Cwd0IpN3uj1V8t5tU7/jPW1eqt9XQ2EFuPw98jcHHHtZDML8rTniOb7uuLWrAPqdrq983YBspAX94LA8KsYRSDjP1ZknlSt+bFNqVjF+xh9WNeGZ5Tx3xr/2Au+mPmNTDE05G/knIkG4BFR9xThspLFBqHQykBHmewX1VUxasZNZSWTjOSt5mrM9Fz9JpHr5OIPuSLg5LtYLkmwSnDBDHqHGiZY4nhkwBUj+sEOAPdjhG2FvkH5uOzRiV3eCeeCYDjbquE4UvT0lI2L4wpShrnI9tyjSq6CRnMlCkVs2KXWTEkIvWu/U8ek1++ldy9KEUFc2N+HYWmiN9Kw=
+    file:
       - BitNovex-${TRAVIS_TAG}-${LABEL}.tar.gz
     skip_cleanup: true
     on:
       repo: BitNovex/BitNovex
       tags: true
       condition: "$_DEPLOYABLE = true"
-          
+
   - provider: s3
     access_key_id:
       secure: DBwV4byu9+n8ZgIg/ncZBlAKAVrhYe4ozCgIk8oxd4ow4sxvyQ7bmUsRKmBwjmRskStu60xVl2OYHU5rK1fc07a8MC/68jhaa1H3qqwaoowFskDF5PW6LVQEu7VlHJqszI821I/m2vDQhXw87RDP6hIqlsXAth6SNUQvr2xGn3GYG8zgUOURVbjU7fbi2q1dvS2Q5Tx7qZ38q+DxV/5raoQRdccWhk0R7xvsTMC3LkeTc8XF7HrYw+n6/tF5fkx3Vnp3MJNZtqBvljNVxbFcHUHvuwKIhDZXpurUQwWarrxQ9YB2Wm+622EZq0UnJP+N56+qYP+A035MIDuTx7Lf6mkNR0I+cDaU0ywM5avm0oXvgfDVQwFTYCwhkMtmrHsISfkFjIZCp8ZAsGEm/rdwlwUP8Mk9kGAFMJuCfEOK5vAyMiKasXEEGFcYxvD92HQPMIjizGyYBdw0BwjgVut48dLFM3VlDlN8GvGoVXllsv0UfepW5JkJWT9XBuF2T+M74U0X/f+E+g6whLRVGZ0tjSzhga9wTKfP0QyWdxzu9U8kJDaYt9Gvca0Xt8VFCT8s9ij0XsNOtOYUo/DQmCn5/okGsVVXgT5KRUt462gJ7IZUX3Ti09KgdQsFfAu2BllaPLvqmu62FwhFdYmkfL9fWgzfE5F2A6HZbV2Di63dew4=

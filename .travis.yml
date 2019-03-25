@@ -157,3 +157,4 @@ deploy:
       repo: BitNovex/BitNovex
       tags: true
       condition: "$_DEPLOYABLE = true"
+      all_branches: true

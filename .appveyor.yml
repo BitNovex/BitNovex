@@ -11,6 +11,7 @@ build_script:
   - MSBuild BitNovex.sln /p:Configuration=Release /m
 
 after_build:
+  - if not defined APPVEYOR_REPO_TAG_NAME (set APPVEYOR_REPO_TAG_NAME=%APPVEYOR_BUILD_VERSION%)
   - cd src\Release
   - mkdir BitNovex-%APPVEYOR_REPO_TAG_NAME%
   - copy *.exe BitNovex-%APPVEYOR_REPO_TAG_NAME%
@@ -20,7 +21,7 @@ after_build:
 
 artifacts:
   - path: BitNovex-%APPVEYOR_REPO_TAG_NAME%-windows.zip
-    name: BitNovexRelease
+    name: BitNovex
 
 deploy:
   - provider: GitHub

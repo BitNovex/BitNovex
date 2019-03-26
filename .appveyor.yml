@@ -44,7 +44,6 @@ deploy:
     region: us-east-2
     set_public: true
     folder: BitNovex
-    artifact: releases
     on:
       appveyor_repo_name: BitNovex/BitNovex
       appveyor_repo_tag: true

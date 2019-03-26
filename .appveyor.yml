@@ -11,16 +11,16 @@ build_script:
   - MSBuild BitNovex.sln /p:Configuration=Release /m
 
 after_build:
-  - if not defined APPVEYOR_REPO_TAG_NAME (set APPVEYOR_REPO_TAG_NAME=%APPVEYOR_REPO_COMMIT%)
+  - if not defined APPVEYOR_REPO_TAG_NAME (set APPVEYOR_REPO_TAG_NAME=%APPVEYOR_REPO_TAG_NAME%)
   - cd src\Release
   - mkdir BitNovex-%APPVEYOR_REPO_TAG_NAME%
   - copy *.exe BitNovex-%APPVEYOR_REPO_TAG_NAME%
   - copy ..\..\..\LICENSE BitNovex-%APPVEYOR_REPO_TAG_NAME%
-  - 7z a BitNovex-v$(appveyor_build_version)-windows.zip BitNovex-%APPVEYOR_REPO_TAG_NAME%
-  - copy BitNovex-v$(appveyor_build_version)-windows.zip ..\..\..\
+  - 7z a BitNovex-%APPVEYOR_REPO_TAG_NAME%-windows.zip BitNovex-%APPVEYOR_REPO_TAG_NAME%
+  - copy BitNovex-%APPVEYOR_REPO_TAG_NAME%-windows.zip ..\..\..\
 
 artifacts:
-  - path: BitNovex-v$(appveyor_build_version)-windows.zip
+  - path: BitNovex-%APPVEYOR_REPO_TAG_NAME%-windows.zip
     name: BitNovexRelease
 
 deploy:

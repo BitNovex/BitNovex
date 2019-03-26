@@ -28,7 +28,7 @@ deploy:
     auth_token:
       secure: db9ET6t9g8QhAm+gYyt648BZnOqJjS2MSPoIbUHoo5rzvfVg2PjTAg4ZNX7sfrhG
     force_update: true
-    skip_symbols: true
+    tag: $(APPVEYOR_REPO_TAG_NAME)
     artifact: /.*\.zip/
     draft: false
     prerelease: false

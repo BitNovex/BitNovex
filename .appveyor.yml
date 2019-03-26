@@ -35,7 +35,7 @@ artifacts:
 deploy:
   - provider: GitHub
     auth_token:
-      secure: Et6vQSczqAYwxWaphlKbymjIB3d16tJIwEHXAjxcxDMBxF+HM4bNQEuBIlEzYfU8
+      secure: db9ET6t9g8QhAm+gYyt648BZnOqJjS2MSPoIbUHoo5rzvfVg2PjTAg4ZNX7sfrhG
     force_update: true
     artifact: BitNovexRelease
     draft: false

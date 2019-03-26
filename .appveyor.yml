@@ -27,8 +27,9 @@ deploy:
   - provider: GitHub
     auth_token:
       secure: db9ET6t9g8QhAm+gYyt648BZnOqJjS2MSPoIbUHoo5rzvfVg2PjTAg4ZNX7sfrhG
+    force_update: true
     skip_symbols: true
-    artifact: BitNovexRelease
+    artifact: /.*\.zip/
     draft: false
     prerelease: false
     on:

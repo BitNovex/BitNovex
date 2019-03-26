@@ -16,7 +16,7 @@ after_build:
   - mkdir BitNovex-%APPVEYOR_REPO_TAG_NAME%
   - copy *.exe BitNovex-%APPVEYOR_REPO_TAG_NAME%
   - copy ..\..\..\LICENSE BitNovex-%APPVEYOR_REPO_TAG_NAME%
-  - 7z a BitNovex-v$(appveyor_build_version)-windows.zip BitNovex-v$(appveyor_build_version)
+  - 7z a BitNovex-v$(appveyor_build_version)-windows.zip BitNovex-%APPVEYOR_REPO_TAG_NAME%
   - copy BitNovex-v$(appveyor_build_version)-windows.zip ..\..\..\
 
 artifacts:

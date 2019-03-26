@@ -4,23 +4,32 @@ environment:
   BOOST_ROOT: C:\Libraries\boost_1_67_0
   BOOST_LIBRARYDIR: C:\Libraries\boost_1_67_0\lib64-msvc-14
 
+init:
+  - set PATH=c:\Python37;c:\Python37\Scripts;%PATH%
+  - pip install clcache
+
+before_build:
+- clcache -s
+
 build_script:
   - md build
   - cd build
   - cmake -G "Visual Studio 15 2017 Win64" ..
-  - MSBuild BitNovex.sln /p:Configuration=Release /m
+  - MSBuild BitNovex.sln /p:CLToolExe=clcache.exe /p:CLToolPath=c:\Python37\Scripts\ /p:Configuration=Release /m
+  - src\Release\cryptotest.exe
 
 after_build:
+  - clcache -s
   - if not defined APPVEYOR_REPO_TAG_NAME (set APPVEYOR_REPO_TAG_NAME=%APPVEYOR_REPO_COMMIT%)
   - cd src\Release
   - mkdir BitNovex-%APPVEYOR_REPO_TAG_NAME%
   - copy *.exe BitNovex-%APPVEYOR_REPO_TAG_NAME%
   - copy ..\..\..\LICENSE BitNovex-%APPVEYOR_REPO_TAG_NAME%
-  - 7z a BitNovex-v$(appveyor_build_version)-windows.zip BitNovex-%APPVEYOR_REPO_TAG_NAME%
-  - copy BitNovex-v$(appveyor_build_version)-windows.zip ..\..\..\
-
+  - 7z a BitNovex-%APPVEYOR_REPO_TAG_NAME%-windows.zip BitNovex-%APPVEYOR_REPO_TAG_NAME%
+  - copy BitNovex-%APPVEYOR_REPO_TAG_NAME%-windows.zip ..\..\..\
+  
 artifacts:
-  - path: BitNovex-v$(appveyor_build_version)-windows.zip
+  - path: BitNovex-$(APPVEYOR_REPO_TAG_NAME)-windows.zip
     name: BitNovexRelease
 
 deploy:
@@ -28,10 +37,14 @@ deploy:
     auth_token:
       secure: db9ET6t9g8QhAm+gYyt648BZnOqJjS2MSPoIbUHoo5rzvfVg2PjTAg4ZNX7sfrhG
     force_update: true
-    skip_symbols: true
-    artifact: /.*\.zip/
+    artifact: BitNovexRelease
     draft: false
     prerelease: false
+    bucket: BitNovex
+    region: us-east-2
+    set_public: true
+    folder: BitNovex
+    artifact: releases
     on:
       appveyor_repo_name: BitNovex/BitNovex
       appveyor_repo_tag: true

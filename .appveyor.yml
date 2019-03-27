@@ -34,16 +34,14 @@ artifacts:
 
 deploy:
   - provider: GitHub
+    tag: $(APPVEYOR_REPO_TAG_NAME)
+    release: $(APPVEYOR_REPO_TAG_NAME)
     auth_token:
       secure: db9ET6t9g8QhAm+gYyt648BZnOqJjS2MSPoIbUHoo5rzvfVg2PjTAg4ZNX7sfrhG
-    force_update: true
+    repository: BitNovex/BitNovex
     artifact: BitNovexRelease
     draft: false
-    prerelease: false
-    bucket: BitNovex
-    region: us-east-2
-    set_public: true
-    folder: BitNovex
+    force_update: true
     on:
-      appveyor_repo_name: BitNovex/BitNovex
+      branch: master
       appveyor_repo_tag: true
